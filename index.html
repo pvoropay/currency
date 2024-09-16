@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compact Currency Converter</title>
     <style>
-        /* Стили остаются без изменений */
         :root {
             --primary-color: #4CAF50;
             --primary-dark: #45a049;
@@ -161,6 +160,35 @@
             background-color: var(--primary-color) !important;
             color: #ffffff;
         }
+
+        .currency-inputs {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .currency-input {
+            width: 45%;
+        }
+
+        #swap-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        #swap-button:hover {
+            background-color: var(--primary-dark);
+        }
     </style>
 </head>
 <body>
@@ -171,16 +199,19 @@
                 <label for="amount">Amount</label>
                 <input type="number" id="amount" placeholder="Enter amount" required>
             </div>
-            <div class="input-group">
-                <label for="from-currency">From Currency</label>
-                <div class="autocomplete">
-                    <input type="text" id="from-currency" placeholder="e.g., USD" required>
+            <div class="currency-inputs">
+                <div class="currency-input">
+                    <label for="from-currency">From Currency</label>
+                    <div class="autocomplete">
+                        <input type="text" id="from-currency" placeholder="e.g., USD" required>
+                    </div>
                 </div>
-            </div>
-            <div class="input-group">
-                <label for="to-currency">To Currency</label>
-                <div class="autocomplete">
-                    <input type="text" id="to-currency" placeholder="e.g., EUR" required>
+                <button type="button" id="swap-button" title="Swap currencies">⇄</button>
+                <div class="currency-input">
+                    <label for="to-currency">To Currency</label>
+                    <div class="autocomplete">
+                        <input type="text" id="to-currency" placeholder="e.g., EUR" required>
+                    </div>
                 </div>
             </div>
             <button type="submit">Convert</button>
@@ -205,7 +236,6 @@
         const exportHistoryBtn = document.getElementById('export-history');
         let conversionHistory = JSON.parse(localStorage.getItem('conversionHistory')) || [];
 
-        // Обновленный список валют
         const currencies = ["USD","AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND","BOB","BRL","BSD","BTN","BWP","BYN","BZD","CAD","CDF","CHF","CLP","CNY","COP","CRC","CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","EUR","FJD","FKP","FOK","GBP","GEL","GGP","GHS","GIP","GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","IMP","INR","IQD","IRR","ISK","JEP","JMD","JOD","JPY","KES","KGS","KHR","KID","KMF","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LYD","MAD","MDL","MGA","MKD","MMK","MNT","MOP","MRU","MUR","MVR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SBD","SCR","SDG","SEK","SGD","SHP","SLE","SLL","SOS","SRD","SSP","STN","SYP","SZL","THB","TJS","TMT","TND","TOP","TRY","TTD","TVD","TWD","TZS","UAH","UGX","UYU","UZS","VES","VND","VUV","WST","XAF","XCD","XDR","XOF","XPF","YER","ZAR","ZMW","ZWL"];
 
         function autocomplete(inp, arr) {
@@ -328,6 +358,14 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        function swapCurrencies() {
+            const fromCurrency = document.getElementById('from-currency');
+            const toCurrency = document.getElementById('to-currency');
+            const temp = fromCurrency.value;
+            fromCurrency.value = toCurrency.value;
+            toCurrency.value = temp;
         }
 
         form.addEventListener('submit', async (event) => {
