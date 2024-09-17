@@ -61,7 +61,6 @@
         button {
             width: 100%;
             padding: 12px;
-            /* Increased padding */
             border: 1px solid #ddd;
             border-radius: var(--border-radius);
             box-sizing: border-box;
@@ -74,8 +73,6 @@
         }
 
         button {
-            padding: 12px;
-            /* Increased padding */
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -84,7 +81,6 @@
             font-weight: bold;
             transition: background-color 0.3s;
             margin-top: 10px;
-            /* Added margin */
         }
 
         button:hover {
@@ -93,10 +89,72 @@
 
         #result {
             font-size: 18px;
-
             color: var(--primary-color);
             text-align: center;
             margin-top: 15px;
+        }
+
+        .currency-inputs {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .currency-input {
+            width: 45%;
+        }
+
+        #swap-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+            margin: 10px 10px -10px 10px;
+        }
+
+        #swap-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .currency-list {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .region-header {
+            font-weight: bold;
+            padding: 10px;
+            background-color: #e9e9e9;
+            cursor: default;
+        }
+
+        .currency-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .currency-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .currency-item img {
+            margin-right: 5px;
         }
 
         .history-item {
@@ -122,9 +180,7 @@
         #history-controls button {
             width: 48%;
             padding: 12px;
-            /* Increased padding */
             font-size: 14px;
-            /* Increased font size */
         }
 
         .section-title {
@@ -133,77 +189,6 @@
             padding-bottom: 5px;
             margin-bottom: 15px;
             font-size: 1.2em;
-        }
-
-        .autocomplete {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .autocomplete-items {
-            position: absolute;
-            border: 1px solid #d4d4d4;
-            border-bottom: none;
-            border-top: none;
-            z-index: 99;
-            top: 100%;
-            left: 0;
-            right: 0;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .autocomplete-items div {
-            padding: 10px;
-            cursor: pointer;
-            background-color: #fff;
-            border-bottom: 1px solid #d4d4d4;
-        }
-
-        .autocomplete-items div:hover {
-            background-color: #e9e9e9;
-        }
-
-        .autocomplete-active {
-            background-color: var(--primary-color) !important;
-            color: #ffffff;
-        }
-
-        .currency-inputs {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .currency-input {
-            width: 45%;
-        }
-
-        #swap-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            /* Increased size */
-            height: 40px;
-            /* Increased size */
-            font-size: 18px;
-            /* Increased font size */
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s;
-            margin: 10px 10px -10px 10px;
-        }
-
-        #swap-button:hover {
-            background-color: var(--primary-dark);
-        }
-        input[type="text"] {
-            text-transform: uppercase;
         }
     </style>
 </head>
@@ -221,6 +206,7 @@
                     <label for="from-currency">From Currency</label>
                     <div class="autocomplete">
                         <input type="text" id="from-currency" placeholder="e.g., USD" required>
+                        <div id="from-currency-list" class="currency-list"></div>
                     </div>
                 </div>
                 <button type="button" id="swap-button" title="Swap currencies">⇄</button>
@@ -228,6 +214,7 @@
                     <label for="to-currency">To Currency</label>
                     <div class="autocomplete">
                         <input type="text" id="to-currency" placeholder="e.g., EUR" required>
+                        <div id="to-currency-list" class="currency-list"></div>
                     </div>
                 </div>
             </div>
@@ -254,76 +241,174 @@
         const exportHistoryBtn = document.getElementById('export-history');
         let conversionHistory = JSON.parse(localStorage.getItem('conversionHistory')) || [];
 
-        const currencies = ["USD", "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP", "CNY", "COP", "CRC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "FOK", "GBP", "GEL", "GGP", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK", "JEP", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KID", "KMF", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLE", "SLL", "SOS", "SRD", "SSP", "STN", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TVD", "TWD", "TZS", "UAH", "UGX", "UYU", "UZS", "VES", "VND", "VUV", "WST", "XAF", "XCD", "XDR", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL"];
+        const regions = {
+            "North America": {
+                "USD": "https://flagcdn.com/us.svg",
+                "CAD": "https://flagcdn.com/ca.svg",
+                "MXN": "https://flagcdn.com/mx.svg",
+                "BSD": "https://flagcdn.com/bs.svg",
+                "BZD": "https://flagcdn.com/bz.svg",
+                "HTG": "https://flagcdn.com/ht.svg",
+                "DOP": "https://flagcdn.com/do.svg",
+                "JMD": "https://flagcdn.com/jm.svg",
+                "TTD": "https://flagcdn.com/tt.svg"
+            },
+            "South America": {
+                "ARS": "https://flagcdn.com/ar.svg",
+                "BOB": "https://flagcdn.com/bo.svg",
+                "BRL": "https://flagcdn.com/br.svg",
+                "CLP": "https://flagcdn.com/cl.svg",
+                "COP": "https://flagcdn.com/co.svg",
+                "PEN": "https://flagcdn.com/pe.svg",
+                "PYG": "https://flagcdn.com/py.svg",
+                "UYU": "https://flagcdn.com/uy.svg",
+                "VES": "https://flagcdn.com/ve.svg"
+            },
+            "Europe": {
+                "EUR": "https://flagcdn.com/eu.svg",
+                "GBP": "https://flagcdn.com/gb.svg",
+                "CHF": "https://flagcdn.com/ch.svg",
+                "NOK": "https://flagcdn.com/no.svg",
+                "SEK": "https://flagcdn.com/se.svg",
+                "DKK": "https://flagcdn.com/dk.svg",
+                "CZK": "https://flagcdn.com/cz.svg",
+                "PLN": "https://flagcdn.com/pl.svg",
+                "HUF": "https://flagcdn.com/hu.svg",
+                "RON": "https://flagcdn.com/ro.svg",
+                "RUB": "https://flagcdn.com/ru.svg",
+                "UAH": "https://flagcdn.com/ua.svg",
+                "BYN": "https://flagcdn.com/by.svg",
+                "RSD": "https://flagcdn.com/rs.svg",
+                "MDL": "https://flagcdn.com/md.svg",
+                "MKD": "https://flagcdn.com/mk.svg",
+                "BAM": "https://flagcdn.com/ba.svg",
+                "ALL": "https://flagcdn.com/al.svg",
+                "GIP": "https://flagcdn.com/gi.svg",
+                "ISK": "https://flagcdn.com/is.svg"
+            },
+            "Asia": {
+                "CNY": "https://flagcdn.com/cn.svg",
+                "JPY": "https://flagcdn.com/jp.svg",
+                "INR": "https://flagcdn.com/in.svg",
+                "KRW": "https://flagcdn.com/kr.svg",
+                "IDR": "https://flagcdn.com/id.svg",
+                "MYR": "https://flagcdn.com/my.svg",
+                "THB": "https://flagcdn.com/th.svg",
+                "SGD": "https://flagcdn.com/sg.svg",
+                "TWD": "https://flagcdn.com/tw.svg",
+                "VND": "https://flagcdn.com/vn.svg",
+                "PKR": "https://flagcdn.com/pk.svg",
+                "IQD": "https://flagcdn.com/iq.svg",
+                "ILS": "https://flagcdn.com/il.svg",
+                "AFN": "https://flagcdn.com/af.svg",
+                "BDT": "https://flagcdn.com/bd.svg",
+                "BHD": "https://flagcdn.com/bh.svg",
+                "KHR": "https://flagcdn.com/kh.svg",
+                "KGS": "https://flagcdn.com/kg.svg",
+                "KWD": "https://flagcdn.com/kw.svg",
+                "LAK": "https://flagcdn.com/la.svg",
+                "LKR": "https://flagcdn.com/lk.svg",
+                "MMK": "https://flagcdn.com/mm.svg",
+                "MNT": "https://flagcdn.com/mn.svg",
+                "NPR": "https://flagcdn.com/np.svg",
+                "OMR": "https://flagcdn.com/om.svg",
+                "QAR": "https://flagcdn.com/qa.svg",
+                "SAR": "https://flagcdn.com/sa.svg",
+                "SYP": "https://flagcdn.com/sy.svg",
+                "TJS": "https://flagcdn.com/tj.svg",
+                "TMT": "https://flagcdn.com/tm.svg",
+                "UZS": "https://flagcdn.com/uz.svg",
+                "YER": "https://flagcdn.com/ye.svg"
+            },
+            "Africa": {
+                "ZAR": "https://flagcdn.com/za.svg",
+                "EGP": "https://flagcdn.com/eg.svg",
+                "NGN": "https://flagcdn.com/ng.svg",
+                "KES": "https://flagcdn.com/ke.svg",
+                "MAD": "https://flagcdn.com/ma.svg",
+                "GHS": "https://flagcdn.com/gh.svg",
+                "TND": "https://flagcdn.com/tn.svg",
+                "XAF": "https://flagcdn.com/cm.svg",
+                "XOF": "https://flagcdn.com/ci.svg",
+                "AOA": "https://flagcdn.com/ao.svg",
+                "BIF": "https://flagcdn.com/bi.svg",
+                "CVE": "https://flagcdn.com/cv.svg",
+                "DJF": "https://flagcdn.com/dj.svg",
+                "ERN": "https://flagcdn.com/er.svg",
+                "ETB": "https://flagcdn.com/et.svg",
+                "GNF": "https://flagcdn.com/gn.svg",
+                "LSL": "https://flagcdn.com/ls.svg",
+                "LRD": "https://flagcdn.com/lr.svg",
+                "MWK": "https://flagcdn.com/mw.svg",
+                "MGA": "https://flagcdn.com/mg.svg",
+                "MUR": "https://flagcdn.com/mu.svg",
+                "MZN": "https://flagcdn.com/mz.svg",
+                "RWF": "https://flagcdn.com/rw.svg",
+                "SCR": "https://flagcdn.com/sc.svg",
+                "SDG": "https://flagcdn.com/sd.svg",
+                "SLL": "https://flagcdn.com/sl.svg",
+                "SOS": "https://flagcdn.com/so.svg",
+                "SSP": "https://flagcdn.com/ss.svg",
+                "SZL": "https://flagcdn.com/sz.svg",
+                "TZS": "https://flagcdn.com/tz.svg",
+                "UGX": "https://flagcdn.com/ug.svg",
+                "ZMW": "https://flagcdn.com/zm.svg",
+                "ZWL": "https://flagcdn.com/zw.svg"
+            }
+        };
 
-        function autocomplete(inp, arr) {
-            let currentFocus;
-            inp.addEventListener("input", function (e) {
-                let a, b, i, val = this.value;
-                closeAllLists();
-                if (!val) { return false; }
-                currentFocus = -1;
-                a = document.createElement("DIV");
-                a.setAttribute("id", this.id + "autocomplete-list");
-                a.setAttribute("class", "autocomplete-items");
-                this.parentNode.appendChild(a);
-                for (i = 0; i < arr.length; i++) {
-                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-                        b = document.createElement("DIV");
-                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-                        b.innerHTML += arr[i].substr(val.length);
-                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                        b.addEventListener("click", function (e) {
-                            inp.value = this.getElementsByTagName("input")[0].value;
-                            closeAllLists();
-                        });
-                        a.appendChild(b);
-                    }
+        function populateCurrencyList(currencyInput, currencyList) {
+            currencyList.innerHTML = '';
+            for (let [region, currencies] of Object.entries(regions)) {
+                const regionHeader = document.createElement('div');
+                regionHeader.className = 'region-header';
+                regionHeader.textContent = region;
+                currencyList.appendChild(regionHeader);
+
+                for (let [code, flagUrl] of Object.entries(currencies)) {
+                    const currencyItem = document.createElement('div');
+                    currencyItem.className = 'currency-item';
+
+                    const flagImg = document.createElement('img');
+                    flagImg.src = flagUrl;
+                    flagImg.alt = code;
+                    flagImg.width = 20;
+                    flagImg.height = 15;
+                    flagImg.style.marginRight = '5px';
+
+                    currencyItem.appendChild(flagImg);
+                    currencyItem.appendChild(document.createTextNode(code));
+
+                    currencyItem.addEventListener('click', function () {
+                        currencyInput.value = code;
+                        currencyList.style.display = 'none';
+                    });
+                    currencyList.appendChild(currencyItem);
                 }
+            }
+        }
+
+        function setupCurrencyInput(currencyInput, currencyList) {
+            populateCurrencyList(currencyInput, currencyList);
+
+            currencyInput.addEventListener('focus', function () {
+                currencyList.style.display = 'block';
             });
-            inp.addEventListener("keydown", function (e) {
-                var x = document.getElementById(this.id + "autocomplete-list");
-                if (x) x = x.getElementsByTagName("div");
-                if (e.keyCode == 40) {
-                    currentFocus++;
-                    addActive(x);
-                } else if (e.keyCode == 38) {
-                    currentFocus--;
-                    addActive(x);
-                } else if (e.keyCode == 13) {
-                    e.preventDefault();
-                    if (currentFocus > -1) {
-                        if (x) x[currentFocus].click();
-                    }
+
+            document.addEventListener('click', function (e) {
+                if (!currencyInput.contains(e.target) && !currencyList.contains(e.target)) {
+                    currencyList.style.display = 'none';
                 }
-            });
-            function addActive(x) {
-                if (!x) return false;
-                removeActive(x);
-                if (currentFocus >= x.length) currentFocus = 0;
-                if (currentFocus < 0) currentFocus = (x.length - 1);
-                x[currentFocus].classList.add("autocomplete-active");
-            }
-            function removeActive(x) {
-                for (var i = 0; i < x.length; i++) {
-                    x[i].classList.remove("autocomplete-active");
-                }
-            }
-            function closeAllLists(elmnt) {
-                var x = document.getElementsByClassName("autocomplete-items");
-                for (var i = 0; i < x.length; i++) {
-                    if (elmnt != x[i] && elmnt != inp) {
-                        x[i].parentNode.removeChild(x[i]);
-                    }
-                }
-            }
-            document.addEventListener("click", function (e) {
-                closeAllLists(e.target);
             });
         }
 
-        autocomplete(document.getElementById("from-currency"), currencies);
-        autocomplete(document.getElementById("to-currency"), currencies);
+        const fromCurrencyInput = document.getElementById('from-currency');
+        const toCurrencyInput = document.getElementById('to-currency');
+        const fromCurrencyList = document.getElementById('from-currency-list');
+        const toCurrencyList = document.getElementById('to-currency-list');
+
+        setupCurrencyInput(fromCurrencyInput, fromCurrencyList);
+        setupCurrencyInput(toCurrencyInput, toCurrencyList);
 
         function updateHistoryDisplay() {
             historyList.innerHTML = '';
@@ -345,7 +430,6 @@
                 date: new Date().toLocaleString()
             };
 
-            // Проверяем, существует ли уже такая конвертация в истории
             const isDuplicate = conversionHistory.some(item =>
                 item.amount === amount &&
                 item.fromCurrency === fromCurrency &&
@@ -355,13 +439,14 @@
 
             if (!isDuplicate) {
                 conversionHistory.unshift(newHistoryItem);
-                if (conversionHistory.length > 5) {
+                if (conversionHistory.length > 20) {
                     conversionHistory.pop();
                 }
                 localStorage.setItem('conversionHistory', JSON.stringify(conversionHistory));
                 updateHistoryDisplay();
             }
         }
+
 
         function fillFormFromHistory(item) {
             document.getElementById('amount').value = item.amount;
@@ -428,7 +513,7 @@
         exportHistoryBtn.addEventListener('click', exportHistory);
         swapButton.addEventListener('click', swapCurrencies);
 
-        // Initial display of history
+
         updateHistoryDisplay();
     </script>
 </body>
