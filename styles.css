@@ -1,3 +1,4 @@
+/* Root Variables */
 :root {
     --primary-color: #4CAF50;
     --primary-dark: #45a049;
@@ -7,6 +8,7 @@
     --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* General Body Styles */
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--secondary-color);
@@ -19,6 +21,7 @@ body {
     min-height: 100vh;
 }
 
+/* Container Styles */
 .container {
     background-color: white;
     border-radius: var(--border-radius);
@@ -29,6 +32,7 @@ body {
     margin-bottom: 15px;
 }
 
+/* Input and Button Styles */
 .input-group {
     margin-bottom: 15px;
     position: relative;
@@ -79,6 +83,7 @@ button:hover {
     margin-top: 15px;
 }
 
+/* Currency Inputs Styles */
 .currency-inputs {
     display: flex;
     align-items: center;
@@ -109,6 +114,7 @@ button:hover {
     background-color: var(--primary-dark);
 }
 
+/* Currency List Styles */
 .currency-list {
     display: none;
     position: absolute;
@@ -142,6 +148,7 @@ button:hover {
     margin-right: 5px;
 }
 
+/* History Styles */
 .history-item {
     background: #f1f8e9;
     padding: 10px;
@@ -168,10 +175,40 @@ button:hover {
     font-size: 14px;
 }
 
+/* Section Title Styles */
 .section-title {
     color: var(--primary-color);
     border-bottom: 1px solid var(--primary-color);
     padding-bottom: 5px;
     margin-bottom: 15px;
     font-size: 1.2em;
+}
+
+/* Switcher Styles */
+.switcher {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.switch {
+    padding: 12px 24px; 
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius); 
+    margin: 0 10px;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 16px; 
+    text-align: center; 
+}
+
+.switch.active {
+    background-color: var(--primary-color);
+    color: white;
+    pointer-events: none;
+}
+
+.switch.inactive {
+    background-color: white;
+    color: var(--text-color);
 }

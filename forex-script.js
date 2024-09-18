@@ -187,3 +187,32 @@ swapButton.addEventListener('click', swapCurrencies);
 
 
 updateHistoryDisplay();
+
+
+// swither js
+function switchPage(page) {
+    const fiatContent = document.getElementById('fiat-content');
+    const cryptoContent = document.getElementById('crypto-content');
+    const fiatSwitch = document.getElementById('fiatSwitch');
+    const cryptoSwitch = document.getElementById('cryptoSwitch');
+
+    if (page === 'fiat') {
+        fiatContent.style.display = 'block';
+        cryptoContent.style.display = 'none';
+        fiatSwitch.classList.add('active');
+        fiatSwitch.classList.remove('inactive');
+        cryptoSwitch.classList.add('inactive');
+        cryptoSwitch.classList.remove('active');
+    } else if (page === 'crypto') {
+        fiatContent.style.display = 'none';
+        cryptoContent.style.display = 'block';
+        fiatSwitch.classList.add('inactive');
+        fiatSwitch.classList.remove('active');
+        cryptoSwitch.classList.add('active');
+        cryptoSwitch.classList.remove('inactive');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    switchPage('fiat'); // 
+});
