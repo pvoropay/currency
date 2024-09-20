@@ -7,7 +7,7 @@ const fromCryptoList = document.getElementById('from-crypto-list');
 const toCryptoList = document.getElementById('to-crypto-list');
 const cryptoHistoryList = document.getElementById('crypto-history-list');
 const clearCryptoHistoryBtn = document.getElementById('clear-crypto-history');
-const exportCryptoHistoryBtn = document.getElementById('export-crypto-history');
+
 
 let cryptoConversionHistory = [];
 
@@ -137,7 +137,7 @@ cryptoForm.addEventListener('submit', async (event) => {
 
 cryptoSwapButton.addEventListener('click', swapCryptocurrencies);
 clearCryptoHistoryBtn.addEventListener('click', clearCryptoHistory);
-exportCryptoHistoryBtn.addEventListener('click', exportCryptoHistory);
+
 
 function clearCryptoHistory() {
     cryptoConversionHistory = [];
@@ -145,19 +145,6 @@ function clearCryptoHistory() {
     updateCryptoHistoryDisplay();
 }
 
-function exportCryptoHistory() {
-    const csvContent = "data:text/csv;charset=utf-8,"
-        + "Amount,From Crypto,To Crypto,Result,Date\n"
-        + cryptoConversionHistory.map(item => `${item.amount},${item.fromCrypto},${item.toCrypto},${item.result},${item.date}`).join("\n");
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "crypto_conversion_history.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
 
 function loadCryptoConversionHistory() {
     cryptoConversionHistory = JSON.parse(localStorage.getItem('cryptoConversionHistory')) || [];
@@ -200,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cryptoForm.addEventListener('submit', handleCryptoConversion);
     cryptoSwapButton.addEventListener('click', swapCryptocurrencies);
     clearCryptoHistoryBtn.addEventListener('click', clearCryptoHistory);
-    exportCryptoHistoryBtn.addEventListener('click', exportCryptoHistory);
+
     
     switchPage('crypto'); // Default to showing the cryptocurrency page
 });

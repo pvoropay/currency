@@ -4,7 +4,6 @@ const result = document.getElementById('result');
 const swapButton = document.getElementById('swap-button');
 const historyList = document.getElementById('history-list');
 const clearHistoryBtn = document.getElementById('clear-history');
-const exportHistoryBtn = document.getElementById('export-history');
 let conversionHistory = JSON.parse(localStorage.getItem('conversionHistory')) || [];
 
 //
@@ -132,19 +131,7 @@ function clearHistory() {
     updateHistoryDisplay();
 }
 
-function exportHistory() {
-    const csvContent = "data:text/csv;charset=utf-8,"
-        + "Amount,From Currency,To Currency,Result,Date\n"
-        + conversionHistory.map(item => `${item.amount},${item.fromCurrency},${item.toCurrency},${item.result},${item.date}`).join("\n");
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "conversion_history.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
 
 function swapCurrencies() {
     const fromCurrency = document.getElementById('from-currency');
@@ -182,7 +169,6 @@ form.addEventListener('submit', async (event) => {
 });
 
 clearHistoryBtn.addEventListener('click', clearHistory);
-exportHistoryBtn.addEventListener('click', exportHistory);
 swapButton.addEventListener('click', swapCurrencies);
 
 

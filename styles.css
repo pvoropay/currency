@@ -33,6 +33,7 @@ body {
 }
 
 /* Input and Button Styles */
+
 .input-group {
     margin-bottom: 15px;
     position: relative;
@@ -91,6 +92,13 @@ button:hover {
 }
 
 /* Currency Inputs Styles */
+#from-currency,
+#to-currency,
+#from-crypto,
+#to-crypto {
+    text-transform: uppercase;
+}
+
 .currency-inputs {
     display: flex;
     align-items: center;
@@ -177,9 +185,9 @@ button:hover {
 }
 
 #history-controls button {
-    width: 48%;
+    width: 100%;
     padding: 12px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 /* Section Title Styles */
@@ -220,6 +228,13 @@ button:hover {
     color: var(--text-color);
 }
 
+a {
+    text-decoration: none;
+    color: var(--primary-color); /* Use the primary color for links */
+    font-weight: bold;
+    transition: color 0.3s, background-color 0.3s;
+    background: white;
+}
 
 #crypto-swap-button {
     background-color: var(--primary-color);
