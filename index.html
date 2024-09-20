@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compact Currency Converter</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="switcher">
-        <div id="fiatSwitch" class="switch active" onclick="switchPage('fiat')">Fiat Currencies</div>
-        <div id="cryptoSwitch" class="switch inactive" onclick="switchPage('crypto')">Cryptocurrencies</div>
+        <div id="fiatSwitch" class="switch active">Fiat Currencies</div>
+        <a href="crypto.html" class="switch">Cryptocurrencies</a>
     </div>
 
     <div id="fiat-content" class="container">
@@ -42,35 +40,6 @@
         <div id="result"></div>
     </div>
 
-    <div id="crypto-content" class="container" style="display: none;">
-        <!-- Crypto content goes here -->
-        <form id="crypto-form">
-            <div class="input-group">
-                <label for="crypto-amount">Amount</label>
-                <input type="number" id="crypto-amount" placeholder="Enter amount" required>
-            </div>
-            <div class="currency-inputs">
-                <div class="currency-input">
-                    <label for="from-crypto">From Cryptocurrency</label>
-                    <div class="autocomplete">
-                        <input type="text" id="from-crypto" placeholder="e.g., BTC" required>
-                        <div id="from-crypto-list" class="currency-list"></div>
-                    </div>
-                </div>
-                <div id="crypto-swap-button" title="Swap cryptocurrencies">⇄</div>
-                <div class="currency-input">
-                    <label for="to-crypto">To Cryptocurrency</label>
-                    <div class="autocomplete">
-                        <input type="text" id="to-crypto" placeholder="e.g., ETH" required>
-                        <div id="to-crypto-list" class="currency-list"></div>
-                    </div>
-                </div>
-            </div>
-            <button type="submit">Convert</button>
-        </form>
-        <div id="crypto-result"></div>
-    </div>
-
     <div class="container">
         <h2 class="section-title">Conversion History</h2>
         <div id="history-list"></div>
@@ -79,8 +48,6 @@
             <button id="export-history">Export</button>
         </div>
     </div>
-    <script src="crypto-script.js"></script>
     <script src="forex-script.js"></script>
 </body>
-
 </html>

@@ -1,5 +1,3 @@
-// Crypto conversion script
-
 const cryptoForm = document.getElementById('crypto-form');
 const cryptoResult = document.getElementById('crypto-result');
 const cryptoSwapButton = document.getElementById('crypto-swap-button');
@@ -11,14 +9,29 @@ const cryptoHistoryList = document.getElementById('crypto-history-list');
 const clearCryptoHistoryBtn = document.getElementById('clear-crypto-history');
 const exportCryptoHistoryBtn = document.getElementById('export-crypto-history');
 
+let cryptoConversionHistory = [];
 
+function populateCryptoList(cryptoInput, cryptoList, cryptocurrencies) {
+    cryptoList.innerHTML = '';  
 
-const cryptoList = [
-    'BTC', 'ETH', 'BNB', 'ADA', 'DOGE', 'XRP', 'DOT', 'UNI', 'BCH', 'LTC',
-    'LINK', 'MATIC', 'XLM', 'ETC', 'THETA', 'VET', 'TRX', 'FIL', 'XMR', 'AAVE'
-];
+    if (!Array.isArray(cryptocurrencies)) {
+        console.error('cryptocurrencies is not an array:', cryptocurrencies);
+        return;
+    }
 
+    cryptocurrencies.forEach(crypto => {
+        const cryptoItem = document.createElement('div');
+        cryptoItem.className = 'crypto-item';
+        cryptoItem.textContent = crypto;  // Здесь предполагается, что "crypto" - это строка
 
+        cryptoItem.addEventListener('click', function () {
+            cryptoInput.value = crypto;
+            cryptoList.style.display = 'none';
+        });
+
+        cryptoList.appendChild(cryptoItem);
+    });
+}
 function setupCryptoInput(cryptoInput, cryptoList) {
     populateCryptoList(cryptoInput, cryptoList);
 
@@ -112,7 +125,7 @@ cryptoForm.addEventListener('submit', async (event) => {
             const convertedAmount = (amount * fromPriceNum / toPriceNum).toFixed(8);
 
             cryptoResult.textContent = `${amount} ${fromCrypto} = ${convertedAmount} ${toCrypto}`;
-            addToHistory(amount, fromCrypto, toCrypto, convertedAmount);
+            addToCryptoHistory(amount, fromCrypto, toCrypto, convertedAmount);
         } else {
             cryptoResult.textContent = 'Invalid cryptocurrency code';
         }
@@ -146,6 +159,49 @@ function exportCryptoHistory() {
     document.body.removeChild(link);
 }
 
+function loadCryptoConversionHistory() {
+    cryptoConversionHistory = JSON.parse(localStorage.getItem('cryptoConversionHistory')) || [];
+    updateCryptoHistoryDisplay(); // Обновляем отображение сразу после загрузки
+}
+
+function switchPage(page) {
+    const fiatContent = document.getElementById('fiat-content');
+    const cryptoContent = document.getElementById('crypto-content');
+    const fiatSwitch = document.getElementById('fiatSwitch');
+    const cryptoSwitch = document.getElementById('cryptoSwitch');
+
+    if (page === 'fiat') {
+        fiatContent.style.display = 'block';
+        cryptoContent.style.display = 'none';
+        fiatSwitch.classList.add('active');
+        fiatSwitch.classList.remove('inactive');
+        cryptoSwitch.classList.add('inactive');
+        cryptoSwitch.classList.remove('active');
+    } else if (page === 'crypto') {
+        fiatContent.style.display = 'none';
+        cryptoContent.style.display = 'block';
+        fiatSwitch.classList.add('inactive');
+        fiatSwitch.classList.remove('active');
+        cryptoSwitch.classList.add('active');
+        cryptoSwitch.classList.remove('inactive');
+    }
+}
 
 
-updateCryptoHistoryDisplay();
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize page elements
+    setupCryptoInput(fromCryptoInput, fromCryptoList);
+    setupCryptoInput(toCryptoInput, toCryptoList);
+    
+    // Load and display conversion history immediately
+    loadCryptoConversionHistory();
+    
+    // Bind event handlers
+    cryptoForm.addEventListener('submit', handleCryptoConversion);
+    cryptoSwapButton.addEventListener('click', swapCryptocurrencies);
+    clearCryptoHistoryBtn.addEventListener('click', clearCryptoHistory);
+    exportCryptoHistoryBtn.addEventListener('click', exportCryptoHistory);
+    
+    switchPage('crypto'); // Default to showing the cryptocurrency page
+});
+
