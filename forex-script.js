@@ -1,4 +1,3 @@
-
 const form = document.getElementById('converter-form');
 const result = document.getElementById('result');
 const swapButton = document.getElementById('swap-button');
@@ -6,7 +5,6 @@ const historyList = document.getElementById('history-list');
 const clearHistoryBtn = document.getElementById('clear-history');
 let conversionHistory = JSON.parse(localStorage.getItem('conversionHistory')) || [];
 
-//
 async function loadCountries() {
     try {
         const response = await fetch('countries.json');
@@ -26,44 +24,62 @@ loadCountries().then(data => {
     regions = data;
     setupCurrencyInput(fromCurrencyInput, fromCurrencyList);
     setupCurrencyInput(toCurrencyInput, toCurrencyList);
-}); //подгрузка json флагов и стран
+});
 
-function populateCurrencyList(currencyInput, currencyList) {
+function populateCurrencyList(currencyInput, currencyList, filter = '') {
     currencyList.innerHTML = '';
     for (let [region, currencies] of Object.entries(regions)) {
-        const regionHeader = document.createElement('div');
-        regionHeader.className = 'region-header';
-        regionHeader.textContent = region;
-        currencyList.appendChild(regionHeader);
+        const filteredCurrencies = Object.entries(currencies).filter(([code]) => 
+            code.toLowerCase().startsWith(filter.toLowerCase())
+        );
 
-        for (let [code, flagUrl] of Object.entries(currencies)) {
-            const currencyItem = document.createElement('div');
-            currencyItem.className = 'currency-item';
+        if (filteredCurrencies.length > 0) {
+            const regionHeader = document.createElement('div');
+            regionHeader.className = 'region-header';
+            regionHeader.textContent = region;
+            currencyList.appendChild(regionHeader);
 
-            const flagImg = document.createElement('img');
-            flagImg.src = flagUrl;
-            flagImg.alt = code;
-            flagImg.width = 20;
-            flagImg.height = 15;
-            flagImg.style.marginRight = '5px';
+            for (let [code, flagUrl] of filteredCurrencies) {
+                const currencyItem = document.createElement('div');
+                currencyItem.className = 'currency-item';
 
-            currencyItem.appendChild(flagImg);
-            currencyItem.appendChild(document.createTextNode(code));
+                const flagImg = document.createElement('img');
+                flagImg.src = flagUrl;
+                flagImg.alt = code;
+                flagImg.width = 20;
+                flagImg.height = 15;
+                flagImg.style.marginRight = '5px';
 
-            currencyItem.addEventListener('click', function () {
-                currencyInput.value = code;
-                currencyList.style.display = 'none';
-            });
-            currencyList.appendChild(currencyItem);
+                currencyItem.appendChild(flagImg);
+                currencyItem.appendChild(document.createTextNode(code));
+
+                currencyItem.addEventListener('click', function () {
+                    currencyInput.value = code;
+                    currencyList.style.display = 'none';
+                });
+                currencyList.appendChild(currencyItem);
+            }
         }
     }
 }
 
 function setupCurrencyInput(currencyInput, currencyList) {
-    populateCurrencyList(currencyInput, currencyList);
-
-    currencyInput.addEventListener('focus', function () {
+    function updateList() {
+        populateCurrencyList(currencyInput, currencyList, currencyInput.value);
         currencyList.style.display = 'block';
+    }
+
+    currencyInput.addEventListener('input', updateList);
+
+    currencyInput.addEventListener('focus', updateList);
+
+    currencyInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+        updateList();
+    });
+
+    currencyList.addEventListener('click', function(e) {
+        e.stopPropagation();
     });
 
     document.addEventListener('click', function (e) {
@@ -118,7 +134,6 @@ function addToHistory(amount, fromCurrency, toCurrency, convertedAmount) {
     }
 }
 
-
 function fillFormFromHistory(item) {
     document.getElementById('amount').value = item.amount;
     document.getElementById('from-currency').value = item.fromCurrency;
@@ -130,8 +145,6 @@ function clearHistory() {
     localStorage.removeItem('conversionHistory');
     updateHistoryDisplay();
 }
-
-
 
 function swapCurrencies() {
     const fromCurrency = document.getElementById('from-currency');
@@ -171,34 +184,22 @@ form.addEventListener('submit', async (event) => {
 clearHistoryBtn.addEventListener('click', clearHistory);
 swapButton.addEventListener('click', swapCurrencies);
 
-
 updateHistoryDisplay();
 
-
-// swither js
 function switchPage(page) {
     const fiatContent = document.getElementById('fiat-content');
-    const cryptoContent = document.getElementById('crypto-content');
     const fiatSwitch = document.getElementById('fiatSwitch');
-    const cryptoSwitch = document.getElementById('cryptoSwitch');
+    const cryptoSwitch = document.querySelector('.switcher a');
 
     if (page === 'fiat') {
         fiatContent.style.display = 'block';
-        cryptoContent.style.display = 'none';
         fiatSwitch.classList.add('active');
         fiatSwitch.classList.remove('inactive');
         cryptoSwitch.classList.add('inactive');
         cryptoSwitch.classList.remove('active');
-    } else if (page === 'crypto') {
-        fiatContent.style.display = 'none';
-        cryptoContent.style.display = 'block';
-        fiatSwitch.classList.add('inactive');
-        fiatSwitch.classList.remove('active');
-        cryptoSwitch.classList.add('active');
-        cryptoSwitch.classList.remove('inactive');
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    switchPage('fiat'); // 
+    switchPage('fiat');
 });
