@@ -230,7 +230,7 @@ cryptoForm.addEventListener('submit', async (event) => {
             const toPriceNum = parseFloat(toPrice.price);
 
             // Calculate the conversion
-            const convertedAmount = (amount * fromPriceNum / toPriceNum).toFixed(8);
+            const convertedAmount = (amount * fromPriceNum / toPriceNum).toFixed(4);
 
             cryptoResult.textContent = `${amount} ${fromCrypto} = ${convertedAmount} ${toCrypto}`;
             addToCryptoHistory(amount, fromCrypto, toCrypto, convertedAmount);

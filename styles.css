@@ -270,3 +270,9 @@ a {
 #crypto-swap-button:hover {
     background-color: var(--primary-dark);
 }
+/* Hide the default number input spinners in Webkit browsers */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
