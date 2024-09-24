@@ -162,6 +162,21 @@ button:hover {
 .currency-item img {
     margin-right: 5px;
 }
+/*Crypto currency list*/
+.crypto-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.crypto-item:hover {
+    background-color: #f1f1f1;
+}
+
+.crypto-item img {
+    margin-right: 5px;
+}
 
 /* History Styles */
 .history-item {

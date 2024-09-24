@@ -11,19 +11,46 @@ const clearCryptoHistoryBtn = document.getElementById('clear-crypto-history');
 
 let cryptoConversionHistory = [];
 
+async function loadCryptocurrencies() {
+    try {
+        const response = await fetch('crypto.json'); // Убедитесь, что путь правильный
+        if (!response.ok) {
+            throw new Error('Failed to load cryptocurrency list');
+        }
+        const data = await response.json();
+        
+        // Проверка на корректность данных
+        if (!data || !data.Cryptocurrencies || typeof data.Cryptocurrencies !== 'object') {
+            throw new Error('Invalid data format');
+        }
+
+        return data.Cryptocurrencies; // Возвращаем объект с криптовалютами и URL логотипов
+    } catch (error) {
+        console.error('Error loading cryptocurrency list:', error);
+        return {}; // Возвращаем пустой объект в случае ошибки
+    }
+}
+
 function populateCryptoList(cryptoInput, cryptoList, cryptocurrencies) {
     cryptoList.innerHTML = '';  
 
-    if (!Array.isArray(cryptocurrencies)) {
-        console.error('cryptocurrencies is not an array:', cryptocurrencies);
-        return;
-    }
-
-    cryptocurrencies.forEach(crypto => {
+    // Проходим по объекту криптовалют и создаём элементы списка
+    Object.keys(cryptocurrencies).forEach(crypto => {
         const cryptoItem = document.createElement('div');
         cryptoItem.className = 'crypto-item';
-        cryptoItem.textContent = crypto;  // Здесь предполагается, что "crypto" - это строка
+        
+        // Добавляем название криптовалюты
+        cryptoItem.textContent = crypto;
 
+        // Добавляем логотип криптовалюты
+        const logoImg = document.createElement('img');
+        logoImg.src = cryptocurrencies[crypto]; // URL логотипа из JSON
+        logoImg.alt = `${crypto} logo`;
+        logoImg.style.width = '20px'; // Размер логотипа (можно настроить)
+        logoImg.style.marginRight = '10px';
+        cryptoItem.prepend(logoImg);
+
+        // При клике вставляем выбранную криптовалюту в input
         cryptoItem.addEventListener('click', function () {
             cryptoInput.value = crypto;
             cryptoList.style.display = 'none';
@@ -32,20 +59,24 @@ function populateCryptoList(cryptoInput, cryptoList, cryptocurrencies) {
         cryptoList.appendChild(cryptoItem);
     });
 }
+
 function setupCryptoInput(cryptoInput, cryptoList) {
-    populateCryptoList(cryptoInput, cryptoList);
+    loadCryptocurrencies().then(cryptocurrencies => {
+        populateCryptoList(cryptoInput, cryptoList, cryptocurrencies);
 
-    cryptoInput.addEventListener('focus', function () {
-        cryptoList.style.display = 'block';
-    });
+        cryptoInput.addEventListener('focus', function () {
+            cryptoList.style.display = 'block';
+        });
 
-    document.addEventListener('click', function (e) {
-        if (!cryptoInput.contains(e.target) && !cryptoList.contains(e.target)) {
-            cryptoList.style.display = 'none';
-        }
+        document.addEventListener('click', function (e) {
+            if (!cryptoInput.contains(e.target) && !cryptoList.contains(e.target)) {
+                cryptoList.style.display = 'none';
+            }
+        });
+    }).catch(error => {
+        console.error('Failed to load and populate cryptocurrencies:', error);
     });
 }
-
 function updateCryptoHistoryDisplay() {
     cryptoHistoryList.innerHTML = '';
     cryptoConversionHistory.forEach((item, index) => {
