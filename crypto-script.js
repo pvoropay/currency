@@ -62,21 +62,98 @@ function populateCryptoList(cryptoInput, cryptoList, cryptocurrencies) {
 
 function setupCryptoInput(cryptoInput, cryptoList) {
     loadCryptocurrencies().then(cryptocurrencies => {
-        populateCryptoList(cryptoInput, cryptoList, cryptocurrencies);
+        const cryptoNames = Object.keys(cryptocurrencies);
 
-        cryptoInput.addEventListener('focus', function () {
-            cryptoList.style.display = 'block';
-        });
-
-        document.addEventListener('click', function (e) {
-            if (!cryptoInput.contains(e.target) && !cryptoList.contains(e.target)) {
-                cryptoList.style.display = 'none';
+        function autocomplete(input, arr) {
+            let currentFocus;
+            
+            input.addEventListener("input", function(e) {
+                let val = this.value;
+                updateList(val);
+            });
+            
+            input.addEventListener("keydown", function(e) {
+                let x = cryptoList.getElementsByClassName("crypto-item");
+                if (e.keyCode == 40) {
+                    currentFocus++;
+                    addActive(x);
+                } else if (e.keyCode == 38) {
+                    currentFocus--;
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        if (x) x[currentFocus].click();
+                    }
+                }
+            });
+            
+            function updateList(val) {
+                closeAllLists();
+                currentFocus = -1;
+                if (!val) {
+                    populateCryptoList(cryptoInput, cryptoList, cryptocurrencies);
+                } else {
+                    let matchingItems = arr.filter(item => 
+                        item.toLowerCase().startsWith(val.toLowerCase())
+                    );
+                    populateCryptoList(cryptoInput, cryptoList, 
+                        Object.fromEntries(matchingItems.map(item => [item, cryptocurrencies[item]]))
+                    );
+                }
+                cryptoList.style.display = 'block';
             }
-        });
+            
+            function addActive(x) {
+                if (!x) return false;
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                x[currentFocus].classList.add("autocomplete-active");
+            }
+            
+            function removeActive(x) {
+                for (let i = 0; i < x.length; i++) {
+                    x[i].classList.remove("autocomplete-active");
+                }
+            }
+            
+            function closeAllLists(elmnt) {
+                let x = document.getElementsByClassName("currency-list");
+                for (let i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != input) {
+                        x[i].style.display = "none";
+                    }
+                }
+            }
+            
+            input.addEventListener('focus', function() {
+                updateList(this.value);
+            });
+
+            input.addEventListener('click', function(e) {
+                e.stopPropagation();
+                updateList(this.value);
+            });
+
+            cryptoList.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            document.addEventListener("click", function (e) {
+                if (!input.contains(e.target) && !cryptoList.contains(e.target)) {
+                    closeAllLists();
+                }
+            });
+        }
+
+        autocomplete(cryptoInput, cryptoNames);
     }).catch(error => {
         console.error('Failed to load and populate cryptocurrencies:', error);
     });
 }
+
+
 function updateCryptoHistoryDisplay() {
     cryptoHistoryList.innerHTML = '';
     cryptoConversionHistory.forEach((item, index) => {
