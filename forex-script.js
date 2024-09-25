@@ -46,8 +46,8 @@ function populateCurrencyList(currencyInput, currencyList, filter = '') {
                 const flagImg = document.createElement('img');
                 flagImg.src = flagUrl;
                 flagImg.alt = code;
-                flagImg.width = 20;
-                flagImg.height = 15;
+                flagImg.width = 30;
+                flagImg.height = 20;
                 flagImg.style.marginRight = '5px';
 
                 currencyItem.appendChild(flagImg);
@@ -56,6 +56,7 @@ function populateCurrencyList(currencyInput, currencyList, filter = '') {
                 currencyItem.addEventListener('click', function () {
                     currencyInput.value = code;
                     currencyList.style.display = 'none';
+                    updateCurrencyLogo(currencyInput, code, flagUrl);
                 });
                 currencyList.appendChild(currencyItem);
             }
@@ -69,7 +70,11 @@ function setupCurrencyInput(currencyInput, currencyList) {
         currencyList.style.display = 'block';
     }
 
-    currencyInput.addEventListener('input', updateList);
+    currencyInput.addEventListener('input', function () {
+        const value = this.value.toUpperCase();
+        updateList();
+        updateCurrencyLogo(currencyInput, value);
+    });
 
     currencyInput.addEventListener('focus', updateList);
 
@@ -97,9 +102,42 @@ const toCurrencyList = document.getElementById('to-currency-list');
 setupCurrencyInput(fromCurrencyInput, fromCurrencyList);
 setupCurrencyInput(toCurrencyInput, toCurrencyList);
 
+function updateCurrencyLogo(input, currencyCode) {
+    const wrapper = input.parentElement;
+
+    // Remove existing logo if present
+    const existingLogo = wrapper.querySelector('.currency-logo');
+    if (existingLogo) {
+        wrapper.removeChild(existingLogo);
+    }
+
+    const flagUrl = regions[Object.keys(regions).find(region => 
+        regions[region][currencyCode]
+    )]?.[currencyCode];
+
+    // Create and insert new logo if flag URL exists
+    if (flagUrl) {
+        const logoImg = document.createElement('img');
+        logoImg.src = flagUrl;
+        logoImg.alt = `${currencyCode} flag`;
+        logoImg.className = 'currency-logo';
+        logoImg.style.width = '20px';
+        logoImg.style.position = 'absolute';
+        logoImg.style.left = '5px';
+        logoImg.style.top = '50%';
+        logoImg.style.transform = 'translateY(-50%)';
+
+        wrapper.style.position = 'relative';
+        wrapper.insertBefore(logoImg, input);
+        input.style.paddingLeft = '30px'; // Adjust input style to make room for logo
+    } else {
+        input.style.paddingLeft = '5px'; // Reset padding if no flag found
+    }
+}
+
 function updateHistoryDisplay() {
     historyList.innerHTML = '';
-    conversionHistory.forEach((item, index) => {
+    conversionHistory.forEach((item) => {
         const historyItem = document.createElement('div');
         historyItem.classList.add('history-item');
         historyItem.textContent = `${item.amount} ${item.fromCurrency} = ${item.result} ${item.toCurrency}`;
@@ -138,6 +176,8 @@ function fillFormFromHistory(item) {
     document.getElementById('amount').value = item.amount;
     document.getElementById('from-currency').value = item.fromCurrency;
     document.getElementById('to-currency').value = item.toCurrency;
+    updateCurrencyLogo(fromCurrencyInput, item.fromCurrency);
+    updateCurrencyLogo(toCurrencyInput, item.toCurrency);
 }
 
 function clearHistory() {
@@ -152,6 +192,8 @@ function swapCurrencies() {
     const temp = fromCurrency.value;
     fromCurrency.value = toCurrency.value;
     toCurrency.value = temp;
+    updateCurrencyLogo(fromCurrencyInput, fromCurrency.value);
+    updateCurrencyLogo(toCurrencyInput, toCurrency.value);
 }
 
 form.addEventListener('submit', async (event) => {
