@@ -276,3 +276,20 @@ input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+/**/
+.autocomplete {
+    position: relative;
+}
+
+.autocomplete input {
+    padding-left: 30px;
+}
+
+.crypto-logo {
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+}

@@ -34,30 +34,58 @@ async function loadCryptocurrencies() {
 function populateCryptoList(cryptoInput, cryptoList, cryptocurrencies) {
     cryptoList.innerHTML = '';  
 
-    // Проходим по объекту криптовалют и создаём элементы списка
     Object.keys(cryptocurrencies).forEach(crypto => {
         const cryptoItem = document.createElement('div');
         cryptoItem.className = 'crypto-item';
         
-        // Добавляем название криптовалюты
-        cryptoItem.textContent = crypto;
-
-        // Добавляем логотип криптовалюты
         const logoImg = document.createElement('img');
-        logoImg.src = cryptocurrencies[crypto]; // URL логотипа из JSON
+        logoImg.src = cryptocurrencies[crypto];
         logoImg.alt = `${crypto} logo`;
-        logoImg.style.width = '20px'; // Размер логотипа (можно настроить)
+        logoImg.style.width = '20px';
         logoImg.style.marginRight = '10px';
-        cryptoItem.prepend(logoImg);
+        
+        const cryptoName = document.createTextNode(crypto);
+        
+        cryptoItem.appendChild(logoImg);
+        cryptoItem.appendChild(cryptoName);
 
-        // При клике вставляем выбранную криптовалюту в input
         cryptoItem.addEventListener('click', function () {
-            cryptoInput.value = crypto;
+            selectCrypto(cryptoInput, crypto, cryptocurrencies[crypto]);
             cryptoList.style.display = 'none';
         });
 
         cryptoList.appendChild(cryptoItem);
     });
+}
+
+function selectCrypto(input, crypto, logoUrl) {
+    const wrapper = input.parentElement;
+    
+    // Remove existing logo if present
+    const existingLogo = wrapper.querySelector('.crypto-logo');
+    if (existingLogo) {
+        wrapper.removeChild(existingLogo);
+    }
+    
+    // Create and insert new logo
+    const logoImg = document.createElement('img');
+    logoImg.src = logoUrl;
+    logoImg.alt = `${crypto} logo`;
+    logoImg.className = 'crypto-logo';
+    logoImg.style.width = '20px';
+    logoImg.style.position = 'absolute';
+    logoImg.style.left = '5px';
+    logoImg.style.top = '50%';
+    logoImg.style.transform = 'translateY(-50%)';
+    
+    wrapper.style.position = 'relative';
+    wrapper.insertBefore(logoImg, input);
+    
+    // Adjust input style to make room for logo
+    input.style.paddingLeft = '30px';
+    
+    // Set input value
+    input.value = crypto;
 }
 
 function setupCryptoInput(cryptoInput, cryptoList) {
@@ -200,9 +228,11 @@ function fillCryptoFormFromHistory(item) {
 function swapCryptocurrencies() {
     const fromCrypto = document.getElementById('from-crypto');
     const toCrypto = document.getElementById('to-crypto');
-    const temp = fromCrypto.value;
-    fromCrypto.value = toCrypto.value;
-    toCrypto.value = temp;
+    const tempValue = fromCrypto.value;
+    const tempLogo = fromCrypto.parentElement.querySelector('.crypto-logo').src;
+    
+    selectCrypto(fromCrypto, toCrypto.value, toCrypto.parentElement.querySelector('.crypto-logo').src);
+    selectCrypto(toCrypto, tempValue, tempLogo);
 }
 
 async function getCryptoPrice(symbol) {
@@ -295,8 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cryptoForm.addEventListener('submit', handleCryptoConversion);
     cryptoSwapButton.addEventListener('click', swapCryptocurrencies);
     clearCryptoHistoryBtn.addEventListener('click', clearCryptoHistory);
-
     
     switchPage('crypto'); // Default to showing the cryptocurrency page
 });
-
