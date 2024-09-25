@@ -98,6 +98,7 @@ function setupCryptoInput(cryptoInput, cryptoList) {
             input.addEventListener("input", function(e) {
                 let val = this.value;
                 updateList(val);
+                updateLogo(val);
             });
             
             input.addEventListener("keydown", function(e) {
@@ -130,6 +131,23 @@ function setupCryptoInput(cryptoInput, cryptoList) {
                     );
                 }
                 cryptoList.style.display = 'block';
+            }
+
+            function updateLogo(val) {
+                const matchingCrypto = arr.find(item => 
+                    item.toLowerCase() === val.toLowerCase()
+                );
+                if (matchingCrypto) {
+                    selectCrypto(input, matchingCrypto, cryptocurrencies[matchingCrypto]);
+                } else {
+                    // Если соответствие не найдено, удаляем логотип
+                    const wrapper = input.parentElement;
+                    const existingLogo = wrapper.querySelector('.crypto-logo');
+                    if (existingLogo) {
+                        wrapper.removeChild(existingLogo);
+                    }
+                    input.style.paddingLeft = '5px';
+                }
             }
             
             function addActive(x) {

@@ -276,13 +276,15 @@ input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-/**/
+/*crypto logos input*/
 .autocomplete {
     position: relative;
 }
 
 .autocomplete input {
-    padding-left: 30px;
+
+    width: 100%; /* Поле ввода занимает всю ширину родительского элемента */
+    box-sizing: border-box; /* Учитываем padding в общей ширине */
 }
 
 .crypto-logo {
@@ -292,4 +294,5 @@ input[type="number"]::-webkit-outer-spin-button {
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
+    pointer-events: none; /* Позволяет кликать "сквозь" логотип */
 }
