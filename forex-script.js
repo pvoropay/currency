@@ -211,7 +211,7 @@ form.addEventListener('submit', async (event) => {
 
         const rate = data.rates[toCurrency];
         if (rate) {
-            const convertedAmount = (amount * rate).toFixed(2);
+            const convertedAmount = (amount * rate).toFixed(4);
             result.textContent = `${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`;
             addToHistory(amount, fromCurrency, toCurrency, convertedAmount);
         } else {

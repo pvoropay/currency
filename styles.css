@@ -240,7 +240,7 @@ button:hover {
 
 .switch.inactive {
     background-color: white;
-    color: var(--text-color);
+    color: var(--primary-color);
 }
 
 a {
