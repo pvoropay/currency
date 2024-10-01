@@ -268,9 +268,22 @@ cryptoForm.addEventListener('submit', async (event) => {
     const toCrypto = toCryptoInput.value.toUpperCase();
 
     try {
-        // Get prices for both cryptocurrencies in USDT
-        const fromPrice = await getCryptoPrice(`${fromCrypto}USDT`);
-        const toPrice = await getCryptoPrice(`${toCrypto}USDT`);
+        let fromPrice, toPrice;
+
+        // Get the price for the from cryptocurrency
+        if (fromCrypto === 'USDT') {
+            // If fromCrypto is USDT, we need to get the price in USDT for the given currency
+            toPrice = await getCryptoPrice(`${toCrypto}USDT`);
+            fromPrice = { price: 1 }; // USDT price is always 1
+        } else if (toCrypto === 'USDT') {
+            // If toCrypto is USDT, get the price of the fromCrypto in USDT
+            fromPrice = await getCryptoPrice(`${fromCrypto}USDT`);
+            toPrice = { price: 1 }; // USDT price is always 1
+        } else {
+            // Both fromCrypto and toCrypto are cryptocurrencies
+            fromPrice = await getCryptoPrice(`${fromCrypto}USDT`);
+            toPrice = await getCryptoPrice(`${toCrypto}USDT`);
+        }
 
         if (fromPrice.price && toPrice.price) {
             // Convert prices to numbers
