@@ -21,19 +21,34 @@ body {
     min-height: 100vh;
 }
 
-/* Container Styles */
-.container {
+/* Two-column layout container */
+.column-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Space between columns */
+    width: 100%;
+    max-width: 1000px; /* Set a max width for the layout */
+}
+
+/* Column Styles */
+.column {
     background-color: white;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     padding: 20px;
     width: 100%;
-    max-width: 350px;
-    margin-bottom: 15px;
+    flex: 1; /* Flex ensures the columns take up equal width */
+}
+
+.column.favorites {
+    max-width: 40%; /* Set a max-width for the favorites column */
+}
+
+.column.other {
+    max-width: 60%;
 }
 
 /* Input and Button Styles */
-
 .input-group {
     margin-bottom: 15px;
     position: relative;
@@ -133,7 +148,7 @@ button:hover {
 .currency-list {
     display: none;
     position: absolute;
-    background-color:moccasin;
+    background-color: moccasin;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
@@ -162,6 +177,7 @@ button:hover {
 .currency-item img {
     margin-right: 5px;
 }
+
 /*Crypto currency list*/
 .crypto-item {
     display: flex;
@@ -222,14 +238,14 @@ button:hover {
 }
 
 .switch {
-    padding: 12px 24px; 
+    padding: 12px 24px;
     cursor: pointer;
     border: 1px solid #ddd;
-    border-radius: var(--border-radius); 
+    border-radius: var(--border-radius);
     margin: 0 10px;
     transition: background-color 0.3s, color 0.3s;
-    font-size: 16px; 
-    text-align: center; 
+    font-size: 16px;
+    text-align: center;
 }
 
 .switch.active {
@@ -270,19 +286,20 @@ a {
 #crypto-swap-button:hover {
     background-color: var(--primary-dark);
 }
+
 /* Hide the default number input spinners in Webkit browsers */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
 /*crypto logos input*/
 .autocomplete {
     position: relative;
 }
 
 .autocomplete input {
-
     width: 100%; /* Поле ввода занимает всю ширину родительского элемента */
     box-sizing: border-box; /* Учитываем padding в общей ширине */
 }
@@ -297,3 +314,63 @@ input[type="number"]::-webkit-outer-spin-button {
     pointer-events: none; /* Позволяет кликать "сквозь" логотип */
 }
 
+/* Favorites Styles Crypto */
+
+
+/* Стили для заголовков */
+.sidebar h1 {
+    font-size: 24px; 
+    margin-bottom: 10px;
+    color: var(--primary-color)
+}
+
+.sidebar h2 {
+    font-size: 18px; 
+    margin: 10px 0; 
+    color: var(--primary-dark)
+}
+
+#tracked-pairs {
+    margin-bottom: 20px; /* Отступ снизу */
+    border-radius: 4px; /* Скругленные углы */
+    background: #f1f8e9;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: var(--border-radius);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Стили для формы добавления валютной пары */
+#add-pair-form {
+    display: flex; /* Flexbox для размещения элементов */
+
+}
+
+/* Стили для селектов */
+#base-crypto,
+#target-crypto {
+    flex: 1; /* Занять равное пространство */
+    padding: 10px; /* Внутренний отступ */
+    border: 1px solid #ccc; /* Рамка */
+    border-radius: 4px; /* Скругленные углы */
+
+}
+
+/* Стили для кнопки добавления пары */
+#add-pair-form button {
+    padding: 10px 15px; /* Внутренний отступ */
+    background-color: var(--primary-color);
+    color: white; /* Цвет текста */
+    border: none; /* Без рамки */
+    border-radius: 4px; /* Скругленные углы */
+    cursor: pointer; /* Курсор в виде руки */
+
+    transition: background-color 0.3s; /* Плавный переход цвета фона */
+}
+
+/* Эффект наведения для кнопки */
+#add-pair-form button:hover {
+    background-color: #0056b3; /* Темнее при наведении */
+}

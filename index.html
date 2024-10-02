@@ -7,46 +7,76 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="switcher">
-        <div id="fiatSwitch" class="switch active">Fiat Currencies</div>
-        <a href="crypto.html" class="switch">Cryptocurrencies</a>
-    </div>
+    <div class="column-container">
+        <!-- Левая колонка (Favorites) -->
+        <div class="column favorites">
+            <div class="sidebar">
+                <h1>Currency Tracker</h1>
+                <h2>Tracked Currency Pairs</h2>
 
-    <div id="fiat-content" class="container">
-        <form id="converter-form">
-            <div class="input-group">
-                <label for="amount">Amount</label>
-                <input type="number" id="amount" placeholder="Enter amount" required min="0.01" step="0.01">
-            </div>
-            <div class="currency-inputs">
-                <div class="currency-input">
-                    <label for="from-currency">From Currency</label>
-                    <div class="autocomplete">
-                        <input type="text" id="from-currency" placeholder="e.g., USD" required>
-                        <div id="from-currency-list" class="currency-list"></div>
-                    </div>
+                <form id="add-pair-form"></form>
+                    <select id="base-currency" required>
+                        <option value="">Select base currency</option>
+                        <!-- Currency options will be dynamically inserted here -->
+                    </select>
+                    <select id="target-currency" required>
+                        <option value="">Select target currency</option>
+                        <!-- Currency options will be dynamically inserted here -->
+                    </select>
+                    <button type="submit">Add Pair</button>
+                </form>
+                <div id="tracked-pairs">
+                    <!-- Tracked currency pairs will be dynamically inserted here -->
                 </div>
-                <div id="swap-button" title="Swap currencies">⇄</div>
-                <div class="currency-input">
-                    <label for="to-currency">To Currency</label>
-                    <div class="autocomplete">
-                        <input type="text" id="to-currency" placeholder="e.g., EUR" required>
-                        <div id="to-currency-list" class="currency-list"></div>
-                    </div>
-                </div>
-            </div>
-            <button type="submit">Convert</button>
-        </form>
-        <div id="result"></div>
-    </div>
 
-    <div class="container">
-        <h2 class="section-title">Conversion History</h2>
-        <div id="history-list"></div>
-        <div id="history-controls">
-            <button id="clear-history">Clear</button>
+            </div>
+        </div>
+
+        <!-- Правая колонка (Основной контент) -->
+        <div class="column other">
+            <div class="switcher">
+                <div id="fiatSwitch" class="switch active">Fiat Currencies</div>
+                <a href="crypto.html" class="switch">Cryptocurrencies</a>
+            </div>
+
+            <div id="fiat-content" class="container">
+                <form id="converter-form">
+                    <div class="input-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" placeholder="Enter amount" required min="0.01" step="0.01">
+                    </div>
+                    <div class="currency-inputs">
+                        <div class="currency-input">
+                            <label for="from-currency">From Currency</label>
+                            <div class="autocomplete">
+                                <input type="text" id="from-currency" placeholder="e.g., USD" required>
+                                <div id="from-currency-list" class="currency-list"></div>
+                            </div>
+                        </div>
+                        <div id="swap-button" title="Swap currencies">⇄</div>
+                        <div class="currency-input">
+                            <label for="to-currency">To Currency</label>
+                            <div class="autocomplete">
+                                <input type="text" id="to-currency" placeholder="e.g., EUR" required>
+                                <div id="to-currency-list" class="currency-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit">Convert</button>
+                </form>
+                <div id="result"></div>
+            </div>
+
+            <div class="container">
+                <h2 class="section-title">Conversion History</h2>
+                <div id="history-list"></div>
+                <div id="history-controls">
+                    <button id="clear-history">Clear</button>
+                </div>
+            </div>
         </div>
     </div>
     <script src="forex-script.js"></script>
+    <script src="daily-forex.js"></script>
 </body>
 </html>
