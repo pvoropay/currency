@@ -344,33 +344,55 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Стили для формы добавления валютной пары */
 #add-pair-form {
-    display: flex; /* Flexbox для размещения элементов */
+
+    display:flex;
+    
 
 }
+#add-pair-button{
+    color:white;
+    width: 60%;
+    margin-top: 0px;
+}
 
-/* Стили для селектов */
-#base-crypto,
-#target-crypto {
-    flex: 1; /* Занять равное пространство */
+#base-currency,
+#target-currency {
+    width: 100%; /* Make them take the full width of the container */
+    padding: 8px; /* Inner padding for better appearance */
+    border-radius: 4px; /* Same rounded corners as button */
+    border: 1px solid #ccc; /* Add a light border */
+    font-size: 13px;
+}
+
+/* Styles for Add Pair button */
+#tracked-pairs div {
     padding: 10px; /* Внутренний отступ */
-    border: 1px solid #ccc; /* Рамка */
-    border-radius: 4px; /* Скругленные углы */
-
+    border: 1px solid #ccc; /* Легкая рамка */
+    border-radius: 4px; /* Закругленные углы */
+    display: flex; /* Flexbox для каждого элемента */
+    align-items: center; /* Центрирование содержимого по вертикали */
+    justify-content: space-between; /* Распределение элементов по горизонтали */
+    cursor: initial; /* Курсор по умолчанию */
 }
 
-/* Стили для кнопки добавления пары */
-#add-pair-form button {
-    padding: 10px 15px; /* Внутренний отступ */
-    background-color: var(--primary-color);
-    color: white; /* Цвет текста */
-    border: none; /* Без рамки */
-    border-radius: 4px; /* Скругленные углы */
-    cursor: pointer; /* Курсор в виде руки */
-
-    transition: background-color 0.3s; /* Плавный переход цвета фона */
+/* Optionally, add a hover effect to make it interactive */
+#tracked-pairs div:hover {
+    background-color: #f0f0f0; /* Slightly darker background on hover */
+    cursor:initial;
 }
 
-/* Эффект наведения для кнопки */
-#add-pair-form button:hover {
-    background-color: #0056b3; /* Темнее при наведении */
+.remove-pair {
+    width: 20%;
+    align-items: center;
+    padding: 5px;
+}
+
+select {
+    font-size: 16px;
+    padding: 5px;
+}
+
+select option {
+    padding-left: 25px; /* Make space for the flag */
+    height: 20px; /* Adjust height for visibility */
 }
